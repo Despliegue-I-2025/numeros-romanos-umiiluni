@@ -4,7 +4,7 @@
   "framework": "vite",
   "env": {},
   "functions": {
-    "romanos.js": {
+    "api/romanos.js": {
       "maxDuration": 60,
       "memory": 1024
     }
@@ -12,7 +12,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/romanos.js"
+      "destination": "/api/romanos.js"
     }
   ]
 }
