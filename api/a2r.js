@@ -1,9 +1,10 @@
 export default function handler(req, res) {
-  // Configurar CORS
+  // Configurar CORS de manera más completa
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   
+  // Manejar preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -15,7 +16,7 @@ export default function handler(req, res) {
   const { arabic } = req.query;
   
   // Validar parámetro
-  if (!arabic || isNaN(arabic)) {
+  if (!arabic || arabic === '' || isNaN(arabic)) {
     return res.status(400).json({ error: 'Parámetro arabic inválido o ausente' });
   }
   
