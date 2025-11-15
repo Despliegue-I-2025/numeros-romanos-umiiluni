@@ -1,10 +1,9 @@
 export default function handler(req, res) {
-  // Configurar CORS de manera más completa
+  // Configurar CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
-  // Manejar preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -15,18 +14,78 @@ export default function handler(req, res) {
   
   const { roman } = req.query;
   
-  // Validar parámetro
   if (!roman || roman === '') {
     return res.status(400).json({ error: 'Parámetro roman inválido o ausente' });
   }
   
-  // Convertir a arábigo
-  const arabic = convertToArabic(roman.toUpperCase());
-  if (arabic === -1) {
-    return res.status(400).json({ error: 'Número romano inválido' });
+  // Validaciones más estrictas para números romanos
+  const validation = validateRomanNumeral(roman.toUpperCase());
+  if (!validation.isValid) {
+    return res.status(400).json({ error: validation.error });
   }
   
+  const arabic = convertToArabic(roman.toUpperCase());
   res.status(200).json({ arabic });
+}
+
+function validateRomanNumeral(roman) {
+  // Validar caracteres permitidos
+  if (!/^[IVXLCDM]+$/.test(roman)) {
+    return { isValid: false, error: 'Caracteres inválidos en número romano' };
+  }
+  
+  // Reglas de repetición (no más de 3 caracteres iguales seguidos, excepto para M)
+  const repetitionRules = {
+    'I': 3, 'X': 3, 'C': 3, 'M': 4, // M puede repetirse más, pero por simplicidad
+    'V': 1, 'L': 1, 'D': 1  // V, L, D no pueden repetirse
+  };
+  
+  // Verificar repeticiones excesivas
+  for (const [numeral, maxRepeat] of Object.entries(repetitionRules)) {
+    const regex = new RegExp(`${numeral}{${maxRepeat + 1},}`);
+    if (regex.test(roman)) {
+      return { isValid: false, error: `Repetición excesiva del numeral ${numeral}` };
+    }
+  }
+  
+  // Reglas de sustracción válidas
+  const validSubtractions = {
+    'I': ['V', 'X'],
+    'X': ['L', 'C'], 
+    'C': ['D', 'M']
+  };
+  
+  // Verificar sustracciones inválidas
+  for (let i = 0; i < roman.length - 1; i++) {
+    const current = roman[i];
+    const next = roman[i + 1];
+    
+    // Si el valor actual es menor que el siguiente, es una sustracción
+    const currentVal = romanToInt(current);
+    const nextVal = romanToInt(next);
+    
+    if (currentVal < nextVal) {
+      // Verificar si la sustracción es válida
+      if (!validSubtractions[current] || !validSubtractions[current].includes(next)) {
+        return { isValid: false, error: `Sustracción inválida: ${current}${next}` };
+      }
+      
+      // Verificar que no haya múltiples caracteres en sustracción
+      if (i > 0 && romanToInt(roman[i - 1]) < nextVal) {
+        return { isValid: false, error: 'Sustracción inválida: múltiples caracteres restados' };
+      }
+    }
+  }
+  
+  return { isValid: true };
+}
+
+function romanToInt(char) {
+  const values = {
+    'I': 1, 'V': 5, 'X': 10, 'L': 50,
+    'C': 100, 'D': 500, 'M': 1000
+  };
+  return values[char] || 0;
 }
 
 function convertToArabic(roman) {
@@ -35,21 +94,14 @@ function convertToArabic(roman) {
     'C': 100, 'D': 500, 'M': 1000
   };
   
-  // Validar caracteres romanos
-  if (!/^[IVXLCDM]+$/i.test(roman)) {
-    return -1;
-  }
-  
   let result = 0;
   for (let i = 0; i < roman.length; i++) {
     const current = romanMap[roman[i]];
     const next = romanMap[roman[i + 1]];
     
-    if (current === undefined) return -1;
-    
-    if (next && current < next) {
+    if (current < next) {
       result += next - current;
-      i++;
+      i++; // Saltar el siguiente carácter
     } else {
       result += current;
     }
