@@ -1,4 +1,4 @@
-export default function handler(req, res) {
+﻿export default function handler(req, res) {
   // Configurar CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -36,15 +36,15 @@ function validateRomanNumeral(roman) {
 
   // Reglas de repeticion mas estrictas
   const repetitionRules = {
-    'I': 3, 'X': 3, 'C': 3, 'M': 3,  // Máximo 3 repeticiones
-    'V': 1, 'L': 1, 'D': 1  // V, L, D no pueden repetirse
+    'I': 3, 'X': 3, 'C': 3, 'M': 3,
+    'V': 1, 'L': 1, 'D': 1
   };
 
   // Verificar repeticiones excesivas
   for (const [numeral, maxRepeat] of Object.entries(repetitionRules)) {
-    const regex = new RegExp(`${numeral}{${maxRepeat + 1},}`);
+    const regex = new RegExp(\\{\,}\);
     if (regex.test(roman)) {
-      return { isValid: false, error: `Repeticion excesiva del numeral ${numeral}` };
+      return { isValid: false, error: \Repeticion excesiva del numeral \\ };
     }
   }
 
@@ -52,7 +52,7 @@ function validateRomanNumeral(roman) {
   const invalidPatterns = [
     { pattern: /MMMCMMM/, error: 'Estructura invalida' },
     { pattern: /VX/, error: 'Orden incorrecto' },
-    { pattern: /^III$/, error: 'Repeticiones excesivas' }, // Solo para III exacto
+    { pattern: /IIII/, error: 'Repeticiones excesivas' },
     { pattern: /IL/, error: 'Sustraccion invalida' },
     { pattern: /IC/, error: 'Sustraccion invalida' },
     { pattern: /ID/, error: 'Sustraccion invalida' },
@@ -86,12 +86,10 @@ function validateRomanNumeral(roman) {
     const nextVal = romanToInt(next);
 
     if (currentVal < nextVal) {
-      // Verificar si la sustraccion es valida
       if (!validSubtractions[current] || !validSubtractions[current].includes(next)) {
-        return { isValid: false, error: `Sustraccion invalida: ${current}${next}` };
+        return { isValid: false, error: \Sustraccion invalida: \\\ };
       }
 
-      // Verificar que no haya multiples caracteres en sustraccion
       if (i > 0 && romanToInt(roman[i - 1]) < nextVal) {
         return { isValid: false, error: 'Sustraccion invalida: multiples caracteres restados' };
       }
