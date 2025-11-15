@@ -4,15 +4,29 @@
   "framework": "vite",
   "env": {},
   "functions": {
-    "api/romanos.js": {
+    "api/a2r.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "api/r2a.js": {
       "maxDuration": 60,
       "memory": 1024
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/romanos.js"
+      "src": "/a2r",
+      "methods": ["GET"],
+      "dest": "/api/a2r.js"
+    },
+    {
+      "src": "/r2a", 
+      "methods": ["GET"],
+      "dest": "/api/r2a.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/$1"
     }
   ]
 }
