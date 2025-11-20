@@ -1,13 +1,27 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/a2r.js", "use": "@vercel/node" },
-    { "src": "api/r2a.js", "use": "@vercel/node" },
-    { "src": "dist/**", "use": "@vercel/static" }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/a2r.js": {
+      "maxDuration": 10
+    },
+    "api/r2a.js": {
+      "maxDuration": 10
+    }
+  },
   "routes": [
-    { "src": "/a2r", "dest": "/api/a2r.js" },
-    { "src": "/r2a", "dest": "/api/r2a.js" },
-    { "src": "/(.*)", "dest": "/dist/$1" }
+    {
+      "src": "/a2r",
+      "dest": "/api/a2r.js"
+    },
+    {
+      "src": "/r2a",
+      "dest": "/api/r2a.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/$1"
+    }
   ]
 }
