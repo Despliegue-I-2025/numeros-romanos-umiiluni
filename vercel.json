@@ -1,0 +1,42 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite", 
+  "env": {},
+  "functions": {
+    "api/a2r.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "api/r2a.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,POST,PUT,DELETE" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/a2r",
+      "methods": ["GET", "OPTIONS"],
+      "dest": "/api/a2r.js"
+    },
+    {
+      "src": "/r2a",
+      "methods": ["GET", "OPTIONS"], 
+      "dest": "/api/r2a.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/$1"
+    }
+  ]
+}
