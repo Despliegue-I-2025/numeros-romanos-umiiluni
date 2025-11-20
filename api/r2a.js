@@ -33,13 +33,18 @@
     return res.status(400).json({ error: 'Repeticiones excesivas' });
   }
 
-  // ✅ AGREGAMOS ESTA VALIDACIÓN PARA "IIII"
+  // ✅ AGREGAMOS ESTA VALIDACIÓN ESPECÍFICA PARA 'IIII'
   if (romanUpper === 'IIII') {
     return res.status(400).json({ error: 'Repeticiones excesivas' });
   }
 
   if (romanUpper === 'VX') {
     return res.status(400).json({ error: 'Orden incorrecto' });
+  }
+
+  // ✅ VALIDACIÓN ADICIONAL: Cualquier repetición de 4 I's, X's, C's o M's
+  if (/(I{4}|X{4}|C{4}|M{4})/.test(romanUpper)) {
+    return res.status(400).json({ error: 'Repeticiones excesivas' });
   }
 
   // Validación básica de caracteres
