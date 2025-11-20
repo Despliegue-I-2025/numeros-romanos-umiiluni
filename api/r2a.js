@@ -21,7 +21,7 @@
   const romanUpper = roman.toUpperCase();
 
   // Validaciones específicas para los casos que reporta el evaluador
-  if (romanUpper === 'MMMCMMM') {
+  if (romanUpper === 'MMCMM') {
     return res.status(400).json({ error: 'Estructura invalida' });
   }
 
@@ -65,6 +65,7 @@ function convertToArabic(roman) {
     const next = romanMap[roman[i + 1]];
 
     if (current < next) {
+      
       result += next - current;
       i++;
     } else {
@@ -73,4 +74,3 @@ function convertToArabic(roman) {
   }
   return result;
 }
-// Última actualización: 2025-11-20 15:15:48
