@@ -1,42 +1,13 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite", 
-  "env": {},
-  "functions": {
-    "api/a2r.js": {
-      "maxDuration": 60,
-      "memory": 1024
-    },
-    "api/r2a.js": {
-      "maxDuration": 60,
-      "memory": 1024
-    }
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,POST,PUT,DELETE" },
-        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
-      ]
-    }
+  "version": 2,
+  "builds": [
+    { "src": "api/a2r.js", "use": "@vercel/node" },
+    { "src": "api/r2a.js", "use": "@vercel/node" },
+    { "src": "dist/**", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/a2r",
-      "methods": ["GET", "OPTIONS"],
-      "dest": "/api/a2r.js"
-    },
-    {
-      "src": "/r2a",
-      "methods": ["GET", "OPTIONS"], 
-      "dest": "/api/r2a.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/$1"
-    }
+    { "src": "/a2r", "dest": "/api/a2r.js" },
+    { "src": "/r2a", "dest": "/api/r2a.js" },
+    { "src": "/(.*)", "dest": "/dist/$1" }
   ]
 }
